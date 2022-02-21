@@ -1,0 +1,42 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: q3-deployment-pod
+  labels:
+    app : q3-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: q3
+  template:
+    metadata:
+      labels:
+        project: q3
+    spec:
+      nodeName: {your_NODENAME}
+      containers:
+        - name : quake3
+          image: qq
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 27961
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: q3-service
+  labels:
+     env  : prod
+     owner: vvv
+spec:
+  type: NodePort
+  selector:
+    project: q3
+  ports:
+    - name      : q3-listener
+      protocol  : UDP
+      port      : 27960
+      targetPort: 27961
+  externalIPs:
+     - {your_IP}
